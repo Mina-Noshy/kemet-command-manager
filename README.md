@@ -24,7 +24,8 @@ A powerful command-line interface (CLI) tool designed to help you save, manage, 
     cd kemet-command-manager
     ```
 
-2.  **Build the Project:**
+2.  **Build the Project (Optional if executable already exists):**
+    If you have already generated the executable file (e.g., obtained it from a release or built it previously), this step can be skipped.
     ```bash
     cargo build --release
     ```
