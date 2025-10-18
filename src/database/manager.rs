@@ -1,9 +1,9 @@
+use std::path::PathBuf;
+
 use crate::errors::app_error::AppError;
 use crate::models::command::CliCommand;
 use bincode::{deserialize, serialize};
 use sled::Db;
-
-const DATABASE_NAME: &str = "kemet_db";
 
 pub struct CommandManager {
     db: Db,
@@ -12,7 +12,8 @@ pub struct CommandManager {
 
 impl CommandManager {
     pub fn new() -> Result<Self, AppError> {
-        let db = sled::open(DATABASE_NAME)?;
+        let db_path = get_db_path();
+        let db = sled::open(db_path)?;
         let next_id = Self::get_next_id(&db);
         Ok(CommandManager { db, next_id })
     }
@@ -137,4 +138,15 @@ impl CommandManager {
         println!("All commands cleared.");
         Ok(())
     }
+}
+
+// Get the database path in the user's home directory
+fn get_db_path() -> PathBuf {
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| {
+        // Fallback to home directory if config dir is not available
+        dirs::home_dir().expect("Unable to find home directory")
+    });
+    db_path.push("kemet_cli");
+    db_path.push("kemet_db");
+    db_path
 }
